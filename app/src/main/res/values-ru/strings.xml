@@ -50,7 +50,7 @@
     <string name="language_system">Использовать язык системы</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Тёмная</string>
-    <string name="theme_auto">Система</string>
+    <string name="theme_auto">Авто</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>
