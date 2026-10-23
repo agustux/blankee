@@ -35,6 +35,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -62,9 +64,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -85,6 +84,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pronaycoding.blankee.R
 import com.pronaycoding.blankee.core.common.Constants
@@ -113,6 +114,13 @@ fun SettingsScreenRoute(
         updateLanguage = viewModel::updateLanguage,
     )
 }
+
+private fun themeIcon(mode: String): ImageVector =
+    when (mode) {
+        Constants.MODE_LIGHT -> Icons.Outlined.LightMode
+        Constants.MODE_DARK -> Icons.Outlined.DarkMode
+        else -> Icons.Outlined.BrightnessAuto
+    }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -197,53 +205,84 @@ fun SettingsScreen(
                         modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 16.dp),
                     )
 
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    var themeExpanded by remember { mutableStateOf(false) }
+                    val currentThemeChoice = themeChoices.firstOrNull { it.mode == selectedTheme }
+
+                    val density = LocalDensity.current
+                    var themeFieldWidth by remember { mutableStateOf(0.dp) }
+
+                    Box(
+                        Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .onSizeChanged { themeFieldWidth = with(density) { it.width.toDp() } },
                     ) {
-                        themeChoices.forEachIndexed { index, choice ->
-                            val selected = selectedTheme == choice.mode
-                            SegmentedButton(
-                                selected = selected,
-                                onClick = {
-                                    if (selectedTheme == choice.mode) return@SegmentedButton
-                                    updateTheme(choice.mode)
-                                    context.findActivity()?.recreate()
-                                },
-                                shape =
-                                    SegmentedButtonDefaults.itemShape(
-                                        index = index,
-                                        count = themeChoices.size,
-                                    ),
-                                colors =
-                                    SegmentedButtonDefaults.colors(
-                                        activeContainerColor = scheme.primaryContainer,
-                                        activeContentColor = scheme.onPrimaryContainer,
-                                        inactiveContainerColor = scheme.surfaceContainerHighest,
-                                        inactiveContentColor = scheme.onSurface,
-                                    ),
+                        Surface(
+                            onClick = { themeExpanded = true },
+                            shape = MaterialTheme.shapes.medium,
+                            color = scheme.surfaceContainer,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row(
+                                Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 15.dp),
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(vertical = 4.dp),
-                                ) {
-                                    Icon(
-                                        imageVector =
-                                            when (choice.mode) {
-                                                Constants.MODE_LIGHT -> Icons.Outlined.LightMode
-                                                Constants.MODE_DARK -> Icons.Outlined.DarkMode
-                                                else -> Icons.Outlined.BrightnessAuto
-                                            },
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp),
-                                    )
-                                    Spacer(modifier = Modifier.size(6.dp))
-                                    Text(
-                                        text = stringResource(choice.labelRes),
-                                        style = MaterialTheme.typography.labelLarge,
-                                        maxLines = 1,
-                                    )
-                                }
+                                Icon(
+                                    imageVector = themeIcon(selectedTheme),
+                                    contentDescription = null,
+                                    tint = scheme.primary,
+                                    modifier = Modifier.size(20.dp),
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Text(
+                                    text = stringResource(currentThemeChoice?.labelRes ?: R.string.settings_theme),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = scheme.onSurface,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = null,
+                                    tint = scheme.onSurfaceVariant,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
+                        }
+
+                        DropdownMenu(
+                            expanded = themeExpanded,
+                            onDismissRequest = { themeExpanded = false },
+                            modifier = Modifier.width(themeFieldWidth),
+                        ) {
+                            themeChoices.forEach { choice ->
+                                val isSelected = selectedTheme == choice.mode
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = stringResource(choice.labelRes),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                            color = if (isSelected) scheme.primary else scheme.onSurface,
+                                        )
+                                    },
+                                    onClick = {
+                                        themeExpanded = false
+                                        if (!isSelected) {
+                                            updateTheme(choice.mode)
+                                            context.findActivity()?.recreate()
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = themeIcon(choice.mode),
+                                            contentDescription = null,
+                                            tint = if (isSelected) scheme.primary else scheme.onSurfaceVariant,
+                                            modifier = Modifier.size(20.dp),
+                                        )
+                                    },
+                                )
                             }
                         }
                     }
