@@ -50,7 +50,7 @@
     <string name="language_system">استخدم لغة النظام</string>
     <string name="theme_light">فاتح</string>
     <string name="theme_dark">داكن</string>
-    <string name="theme_system">النظام</string>
+    <string name="theme_auto">النظام</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

@@ -50,7 +50,7 @@
     <string name="language_system">Utiliser la langue du système</string>
     <string name="theme_light">Clair</string>
     <string name="theme_dark">Sombre</string>
-    <string name="theme_system">Système</string>
+    <string name="theme_auto">Système</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

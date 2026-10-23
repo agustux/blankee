@@ -50,7 +50,7 @@
     <string name="language_system">ਸਿਸਟਮ ਭਾਸ਼ਾ ਵਰਤੋ</string>
     <string name="theme_light">ਲਾਇਟ</string>
     <string name="theme_dark">ਡਾਰਕ</string>
-    <string name="theme_system">ਸਿਸਟਮ</string>
+    <string name="theme_auto">ਸਿਸਟਮ</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

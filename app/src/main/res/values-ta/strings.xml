@@ -50,7 +50,7 @@
     <string name="language_system">கணினி மொழியைப் பயன்படுத்தவும்</string>
     <string name="theme_light">ஒளி</string>
     <string name="theme_dark">இருண்ட</string>
-    <string name="theme_system">கணினி</string>
+    <string name="theme_auto">கணினி</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

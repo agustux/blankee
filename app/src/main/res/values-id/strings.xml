@@ -50,7 +50,7 @@
     <string name="language_system">Gunakan bahasa sistem</string>
     <string name="theme_light">Terang</string>
     <string name="theme_dark">Gelap</string>
-    <string name="theme_system">Sistem</string>
+    <string name="theme_auto">Sistem</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>
