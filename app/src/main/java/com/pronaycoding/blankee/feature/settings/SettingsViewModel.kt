@@ -66,6 +66,9 @@ class SettingsViewModel(
         MutableStateFlow(prefManager.getThemeModeBlocking(Constants.MODE_DARK))
     val selectedTheme: StateFlow<String> = _selectedTheme.asStateFlow()
 
+    private val _amoledDark = MutableStateFlow(prefManager.getAmoledDarkBlocking(false))
+    val amoledDark: StateFlow<Boolean> = _amoledDark.asStateFlow()
+
     private val _selectedLanguage =
         MutableStateFlow(
             prefManager.getLanguageTagBlocking(Constants.LANGUAGE_TAG_SYSTEM),
@@ -77,6 +80,14 @@ class SettingsViewModel(
         _selectedTheme.value = mode
         runBlocking {
             prefManager.setThemeMode(mode)
+        }
+    }
+
+    fun updateAmoledDark(enabled: Boolean) {
+        if (_amoledDark.value == enabled) return
+        _amoledDark.value = enabled
+        runBlocking {
+            prefManager.setAmoledDark(enabled)
         }
     }
 

@@ -26,12 +26,17 @@ android {
     namespace = "com.pronaycoding.blankee"
     compileSdk = 36
 
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     defaultConfig {
         applicationId = "com.pronaycoding.blankee"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.1.4"
+        versionCode = 11
+        versionName = "1.1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

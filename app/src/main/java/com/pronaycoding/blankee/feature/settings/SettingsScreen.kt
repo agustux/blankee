@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -68,6 +67,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,10 +80,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pronaycoding.blankee.R
@@ -101,15 +105,18 @@ fun SettingsScreenRoute(
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val selectedTheme by viewModel.selectedTheme.collectAsStateWithLifecycle()
+    val amoledDark by viewModel.amoledDark.collectAsStateWithLifecycle()
     val selectedLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
 
     SettingsScreen(
         selectedTheme = selectedTheme,
+        amoledDark = amoledDark,
         selectedLanguage = selectedLanguage,
         themeChoices = viewModel.themeChoices,
         languageChoices = viewModel.languageChoices,
         onBackPressed = onBackPressed,
         updateTheme = viewModel::updateTheme,
+        updateAmoledDark = viewModel::updateAmoledDark,
         updateLanguage = viewModel::updateLanguage,
     )
 }
@@ -118,10 +125,12 @@ fun SettingsScreenRoute(
 @Composable
 fun SettingsScreen(
     selectedTheme: String,
+    amoledDark: Boolean,
     selectedLanguage: String,
     themeChoices: List<ThemeChoice>,
     languageChoices: List<LanguageChoice>,
     updateTheme: (String) -> Unit,
+    updateAmoledDark: (Boolean) -> Unit,
     updateLanguage: (String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -244,6 +253,35 @@ fun SettingsScreen(
                                         maxLines = 1,
                                     )
                                 }
+                            }
+                        }
+                    }
+
+                    if (selectedTheme != Constants.MODE_LIGHT) {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Surface(
+                            color = Color.Transparent,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp, horizontal=8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.theme_amoled),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = scheme.onSurface,
+                                    fontWeight = FontWeight.Normal,
+                                )
+                                Switch(
+                                    checked = amoledDark,
+                                    onCheckedChange = { checked ->
+                                        updateAmoledDark(checked)
+                                        context.findActivity()?.recreate()
+                                    },
+                                )
                             }
                         }
                     }
@@ -390,7 +428,6 @@ fun SettingsScreen(
 
             AttributionFooter(
                 onOpenRafael = { openExternalUrl(context, Constants.RAFAEL_MARDOJAI_GITHUB) },
-                onOpenPronay = { openExternalUrl(context, Constants.PRONAY_GITHUB) },
             )
         }
     }
@@ -473,10 +510,26 @@ private fun SettingActionRow(
     }
 }
 
+private fun linkedText(
+    text: String,
+    vararg links: Pair<String, LinkAnnotation>,
+): AnnotatedString =
+    buildAnnotatedString {
+        append(text)
+        links.forEach { (label, link) ->
+            val start = text.indexOf(label)
+            if (start < 0) return@forEach
+            val end = start + label.length
+            when (link) {
+                is LinkAnnotation.Url -> addLink(link, start, end)
+                is LinkAnnotation.Clickable -> addLink(link, start, end)
+            }
+        }
+    }
+
 @Composable
 private fun AttributionFooter(
     onOpenRafael: () -> Unit,
-    onOpenPronay: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
 
@@ -489,17 +542,17 @@ private fun AttributionFooter(
         )
 
     val inspired =
-        AnnotatedString
-            .Builder()
-            .apply {
-                append("Inspired by ")
-                pushStringAnnotation(tag = "rafael", annotation = "rafael")
-                withStyle(linkStyle) { append("Rafael Mardojai") }
-                pop()
-                append("'s Blanket")
-            }.toAnnotatedString()
+        linkedText(
+            stringResource(R.string.attribution_inspired, "Rafael Mardojai"),
+            "Rafael Mardojai" to
+                LinkAnnotation.Clickable(
+                    tag = "rafael",
+                    styles = TextLinkStyles(style = linkStyle),
+                    linkInteractionListener = { onOpenRafael() },
+                ),
+        )
 
-    ClickableText(
+    Text(
         text = inspired,
         style =
             MaterialTheme.typography.bodySmall.copy(
@@ -507,25 +560,28 @@ private fun AttributionFooter(
                 textAlign = TextAlign.Center,
             ),
         modifier = Modifier.fillMaxWidth(),
-        onClick = { offset ->
-            inspired
-                .getStringAnnotations(tag = "rafael", start = offset, end = offset)
-                .firstOrNull()
-                ?.let { onOpenRafael() }
-        },
     )
 
     val madeBy =
-        AnnotatedString
-            .Builder()
-            .apply {
-                append("Made with ❤️ by ")
-                pushStringAnnotation(tag = "pronay", annotation = "pronay")
-                withStyle(linkStyle) { append("Pronay") }
-                pop()
-            }.toAnnotatedString()
+        linkedText(
+            stringResource(
+                R.string.attribution_made_by,
+                "Pronay",
+                stringResource(R.string.attribution_contributors),
+            ),
+            "Pronay" to
+                LinkAnnotation.Url(
+                    "https://github.com/itsPronay",
+                    TextLinkStyles(style = linkStyle),
+                ),
+            stringResource(R.string.attribution_contributors) to
+                LinkAnnotation.Url(
+                    "https://github.com/itsPronay/blankee/graphs/contributors",
+                    TextLinkStyles(style = linkStyle),
+                ),
+        )
 
-    ClickableText(
+    Text(
         text = madeBy,
         style =
             MaterialTheme.typography.bodySmall.copy(
@@ -536,11 +592,5 @@ private fun AttributionFooter(
             Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 8.dp),
-        onClick = { offset ->
-            madeBy
-                .getStringAnnotations(tag = "pronay", start = offset, end = offset)
-                .firstOrNull()
-                ?.let { onOpenPronay() }
-        },
     )
 }
