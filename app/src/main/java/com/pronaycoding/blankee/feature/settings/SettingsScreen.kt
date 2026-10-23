@@ -68,6 +68,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,15 +102,18 @@ fun SettingsScreenRoute(
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val selectedTheme by viewModel.selectedTheme.collectAsStateWithLifecycle()
+    val amoledDark by viewModel.amoledDark.collectAsStateWithLifecycle()
     val selectedLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
 
     SettingsScreen(
         selectedTheme = selectedTheme,
+        amoledDark = amoledDark,
         selectedLanguage = selectedLanguage,
         themeChoices = viewModel.themeChoices,
         languageChoices = viewModel.languageChoices,
         onBackPressed = onBackPressed,
         updateTheme = viewModel::updateTheme,
+        updateAmoledDark = viewModel::updateAmoledDark,
         updateLanguage = viewModel::updateLanguage,
     )
 }
@@ -118,10 +122,12 @@ fun SettingsScreenRoute(
 @Composable
 fun SettingsScreen(
     selectedTheme: String,
+    amoledDark: Boolean,
     selectedLanguage: String,
     themeChoices: List<ThemeChoice>,
     languageChoices: List<LanguageChoice>,
     updateTheme: (String) -> Unit,
+    updateAmoledDark: (Boolean) -> Unit,
     updateLanguage: (String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -244,6 +250,35 @@ fun SettingsScreen(
                                         maxLines = 1,
                                     )
                                 }
+                            }
+                        }
+                    }
+
+                    if (selectedTheme != Constants.MODE_LIGHT) {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Surface(
+                            color = Color.Transparent,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp, horizontal=8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.theme_amoled),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = scheme.onSurface,
+                                    fontWeight = FontWeight.Normal,
+                                )
+                                Switch(
+                                    checked = amoledDark,
+                                    onCheckedChange = { checked ->
+                                        updateAmoledDark(checked)
+                                        context.findActivity()?.recreate()
+                                    },
+                                )
                             }
                         }
                     }
