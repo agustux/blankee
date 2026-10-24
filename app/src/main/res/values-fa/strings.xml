@@ -50,7 +50,7 @@
     <string name="language_system">استفاده از زبان سیستم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تاریک</string>
-    <string name="theme_system">سیستم</string>
+    <string name="theme_auto">خودکار</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

@@ -50,7 +50,7 @@
     <string name="language_system">সিস্টেম ভাষা ব্যবহার করুন</string>
     <string name="theme_light">হালকা</string>
     <string name="theme_dark">গাঢ়</string>
-    <string name="theme_system">সিস্টেম অনুযায়ী</string>
+    <string name="theme_auto">স্বয়ংক্রিয়</string>
     <string name="language_english">English</string>
     <string name="language_bengali">বাংলা</string>
     <string name="language_hindi">हिंदी</string>

@@ -50,7 +50,7 @@
     <string name="language_system">Sistem dilini kullan</string>
     <string name="theme_light">Açık</string>
     <string name="theme_dark">Koyu</string>
-    <string name="theme_system">Sistem</string>
+    <string name="theme_auto">Auto</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

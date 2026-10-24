@@ -50,7 +50,7 @@
     <string name="language_system">Usar idioma do sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Escuro</string>
-    <string name="theme_system">Sistema</string>
+    <string name="theme_auto">Auto</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

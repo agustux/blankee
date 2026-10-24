@@ -50,7 +50,7 @@
     <string name="language_system">Sử dụng ngôn ngữ hệ thống</string>
     <string name="theme_light">Sáng</string>
     <string name="theme_dark">Tối</string>
-    <string name="theme_system">Hệ thống</string>
+    <string name="theme_auto">Tự động</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>
     <string name="language_hindi">हिंदी</string>

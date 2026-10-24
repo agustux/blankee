@@ -50,7 +50,7 @@
     <string name="language_system">Use system language</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system">System</string>
+    <string name="theme_auto">Auto</string>
     <string name="theme_amoled">AMOLED Dark</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文 (简体)</string>

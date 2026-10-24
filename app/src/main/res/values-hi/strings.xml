@@ -50,7 +50,7 @@
     <string name="language_system">सिस्टम भाषा का उपयोग करें</string>
     <string name="theme_light">हल्का</string>
     <string name="theme_dark">गहरा</string>
-    <string name="theme_system">सिस्टम के अनुसार</string>
+    <string name="theme_auto">ऑटो</string>
     <string name="language_english">English</string>
     <string name="language_bengali">বাংলা</string>
     <string name="language_hindi">हिंदी</string>
